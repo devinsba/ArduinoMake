@@ -1,4 +1,5 @@
-ARDUINO_LOCATION="C:\arduino"
+ARDUINO_DIR=C:\arduino
+BOARD_TAG=uno
+ARDUINO_LIBS=ETHERNET
 
-default:
-	@echo "TEST"
+include Arduino.mk
