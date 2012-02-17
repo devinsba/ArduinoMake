@@ -1,8 +1,9 @@
-ARDUINO_DIR=/home/devinsba/apps/arduino-1.0
+ARDUINO_DIR=/Applications/Arduino.app/Contents/Resources/Java
 BOARD_TAG=uno
 ARDUINO_LIBS=SPI Ethernet Ethernet/utility
+MASTER_MAKE_DIR=.
 
-AVR_TOOLS_PATH=/usr/bin
+# AVR_TOOLS_PATH=/usr/bin
 # AVRDUDE_CONF=${ARDUINO_DIR}/hardware/tools/avrdude.conf
 
-include Arduino.mk
+include ${MASTER_MAKE_DIR}/Arduino.mk
