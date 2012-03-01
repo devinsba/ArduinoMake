@@ -3,6 +3,9 @@ BOARD_TAG=uno
 ARDUINO_LIBS=SPI Ethernet Ethernet/utility
 MASTER_MAKE_DIR=.
 
+# MY_LIBS_DIR=
+# MY_LIBS=IRremote
+
 # AVR_TOOLS_PATH=/usr/bin
 # AVRDUDE_CONF=${ARDUINO_DIR}/hardware/tools/avrdude.conf
 

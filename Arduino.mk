@@ -327,14 +327,22 @@ ECHO    = echo
 # General arguments
 SYS_LIBS      = $(patsubst %,$(ARDUINO_LIB_PATH)/%,$(ARDUINO_LIBS))
 SYS_INCLUDES  = $(patsubst %,-I%,$(SYS_LIBS))
+
+LOCAL_LIBS = $(patsubst %, $(MY_LIBS_DIR)/%, $(MY_LIBS))
+LOCAL_INCLUDES = $(patsubst %, -I%, $(LOCAL_LIBS))
+
 LIB_C_SRCS    = $(wildcard $(patsubst %,%/*.c,$(SYS_LIBS)))
+MY_C_SRCS = $(wildcard $(patsubst %, %/*.c, $(LOCAL_LIBS)))
 LIB_CPP_SRCS  = $(wildcard $(patsubst %,%/*.cpp,$(SYS_LIBS)))
+MY_CPP_SRCS = $(wildcard $(patsubst %, %/*.cpp, $(LOCAL_LIBS)))
 LIB_OBJS      = $(patsubst $(ARDUINO_LIB_PATH)/%.c,$(OBJDIR)/libs/%.o,$(LIB_C_SRCS)) \
-		$(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS))
+		$(patsubst $(ARDUINO_LIB_PATH)/%.cpp,$(OBJDIR)/libs/%.o,$(LIB_CPP_SRCS)) \
+                $(patsubst $(MY_LIBS_DIR)/%.c, $(OBJDIR)/libs/%.o, $(MY_C_SRCS)) \
+                $(patsubst $(MY_LIBS_DIR)/%.cpp, $(OBJDIR)/libs/%.o, $(MY_CPP_SRCS))
 
 CPPFLAGS      = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -DARDUINO=$(ARDUINO_VERSION) \
 			-I. -I$(ARDUINO_CORE_PATH) -I$(ARDUINO_VAR_PATH)/$(VARIANT) \
-			$(SYS_INCLUDES) -g -Os -w -Wall \
+			$(SYS_INCLUDES) $(LOCAL_INCLUDES) -g -Os -w -Wall \
 			-ffunction-sections -fdata-sections
 CFLAGS        = -std=gnu99
 CXXFLAGS      = -fno-exceptions
@@ -358,6 +366,14 @@ $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp
+	mkdir -p $(dir $@)
+	$(CC) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+
+$(OBJDIR)/libs/%.o: $(MY_LIBS_DIR)/%.c
+	mkdir -p $(dir $@)
+	$(CC) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+
+$(OBJDIR)/libs/%.o: $(MY_LIBS_DIR)/%.cpp
 	mkdir -p $(dir $@)
 	$(CC) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
